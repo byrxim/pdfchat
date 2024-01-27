@@ -11,7 +11,11 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.chains.summarize import load_summarize_chain
 document = PdfReader("48lawsofpower.pdf")
 
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
+
+
+def get_api_key():
+    input_text = st.text_input(label="API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input")
+    return input_text
 
 def load_LLM():
     """Logic for loading the chain you want to use should go here."""
@@ -24,6 +28,7 @@ st.header("PDF CHATTER BY BRIYASH")
 
 st.markdown("## Enter Your Query")
 
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = get_api_key()
 
 def get_text():
     input_text = st.text_area(label="Email Input", label_visibility='collapsed', placeholder="Your query", key="email_input")
