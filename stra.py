@@ -14,12 +14,10 @@ document = PdfReader("48lawsofpower.pdf")
 
 
 def get_api_key():
-    input_text = st.text_input(label="API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input")
+    input_text = st.text_input(label="API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="api_key_input")
     return input_text
 
 def load_LLM():
-    """Logic for loading the chain you want to use should go here."""
-    # Make sure your openai_api_key is set as an environment variable
     llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.8,"max_length":512})
     return llm
 
@@ -31,18 +29,18 @@ st.markdown("## Enter Your Query")
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = get_api_key()
 
 def get_text():
-    input_text = st.text_area(label="Email Input", label_visibility='collapsed', placeholder="Your query", key="email_input")
+    input_text = st.text_area(label="Email Input", label_visibility='collapsed', placeholder="Your query", key="query_input")
     return input_text
 
-email_input = get_text()
+query_input = get_text()
 
-if len(email_input.split(" ")) > 700:
+if len(query_input.split(" ")) > 700:
     st.write("Please enter a shorter Query. The maximum length is 700 words.")
     st.stop()
 
 st.markdown("### Result:")
 
-if email_input:
+if query_input:
 
     llm = load_LLM()
 
@@ -62,7 +60,7 @@ if email_input:
     embeddings = HuggingFaceEmbeddings()
     db = FAISS.from_texts(docs, embeddings)
 
-    query=email_input
+    query=query_input
 
     docRes=db.similarity_search(query)
     chain = load_summarize_chain(llm, chain_type="map_reduce")
